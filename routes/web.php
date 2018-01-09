@@ -34,7 +34,11 @@ Route::get('/userorder', '\App\Http\Controllers\UserController@order');
 //支付模块
 
 //购物车模块
-Route::get('/shopcar', '\App\Http\Controllers\CarController@index');
+
+Route::get('/shopcar','\App\Http\Controllers\CarController@index');
+//同步购物车
+Route::get('/dataSync','\App\Http\Controllers\CarController@dataSync')->name('car.dataSync');
+
 
 //团购模块
 Route::get('/group', '\App\Http\Controllers\GroupController@index');
