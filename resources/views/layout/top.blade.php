@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Session;
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link href="css/css.css" rel="stylesheet" type="text/css" />
 <link href="css/common.css" rel="stylesheet" tyle="text/css" />
@@ -11,10 +12,13 @@ use Illuminate\Support\Facades\Session;
 <script src="js/jquery.SuperSlide.2.1.1.js" type="text/javascript"></script>
 <script src="js/common_js.js" type="text/javascript"></script>
 <script src="js/footer.js" type="text/javascript"></script>
+<script src="js/jquery.cookie.js"></script>
 <title>茶叶商城首页</title>
+
 </head>
 
 <body>
+
 <div id="top">
   <div class="top">
     <div class="Collection"><em></em><a href="#">收藏我们</a></div>
@@ -52,3 +56,4 @@ use Illuminate\Support\Facades\Session;
 	</div>
   </div>
 </div>
+
