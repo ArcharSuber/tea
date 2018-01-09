@@ -8,6 +8,7 @@
 <script src="js/jquery.SuperSlide.2.1.1.js" type="text/javascript"></script>
 <script src="js/common_js.js" type="text/javascript"></script>
 <script src="js/footer.js" type="text/javascript"></script>
+<script src="js/jquery.cookie.js"></script>
 <title>茶叶商城首页</title>
 </head>
 

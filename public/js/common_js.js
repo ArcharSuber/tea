@@ -20,15 +20,39 @@ $(document).ready(function(){
 			//$(this).children(".dorpdown-layer").attr('class','');
 		}
 	); 
- //购物车
- $("div.hd_Shopping_list").hover(function(){
+
+ //更新购物车的数量
+ console.log($.cookie('car'));
+ 
+ if($.cookie('car') != undefined){
+    $(".ci-count").text(eval($.cookie('car')).length);
+ }
+ 
+    //购物车
+    $("div.hd_Shopping_list").hover(function(){
+            if($.cookie('car') == undefined){
+                $("#Shopping_list").append('<div class="dorpdown-layer"><div class="spacer"></div><div class="prompt"></div><div class="nogoods"><b></b>购物车中还没有商品，赶紧选购吧！</div></div>');
+
+            }else{
+                var html = '<div class="dorpdown-layer"><div class="spacer"></div>';
+                var goodsNum = parseInt(0);
+                var priceNum = parseInt(0);
+                $.each(eval($.cookie('car')),function(k,v){
+                    goodsNum = goodsNum + parseInt(v.num);
+                    priceNum = priceNum + parseInt(v.num) * parseFloat(v.shop_price);
+                    html += '<ul class="p_s_list"><li><div class="img"><img src="'+v.goodsimg+'"></div><div class="content"><p><a href="#">'+v.goodsname.substr(0,16)+'</a></p><p>'+v.attr+'</p></div><div class="Operations"><p class="Price">¥'+v.shop_price+'</p><p><a href="#">删除</a></p></div></li></ul>';
+                })
+                html += '<div class="Shopping_style"><div class="p-total">共<b>'+goodsNum+'</b>件商品　共计<strong>￥ '+priceNum.toFixed(2)+'</strong></div><a href="shopping_cart.html" title="去购物车结算" id="btn-payforgoods" class="Shopping">去购物车结算</a></div></div>'; 
+                $('#Shopping_list').append(html);
+            }
 			$(this).addClass("hover");
 			//$(this).children(".dorpdown-layer").attr('class','');
 		},function(){
 			$(this).removeClass("hover");  
 			//$(this).children(".dorpdown-layer").attr('class','');
 		}
-	); 
+	);
+
  //支付方式
  $("#payment").hover(function(){
 			$(this).addClass("hover");
@@ -264,4 +288,54 @@ $(window).scroll(function() {
             }
             return false;
         } 
-})  
+    });
+/***********Cookie实现购物车存取**************/
+    function AddToShoppingCar(id, goodsimg, goodsname, shop_price, market_price, attr, attr_id, num, status = 0) {
+        var  flag = 0;//是否新增Cookie购物车标志
+        var _num = 1;
+        var cookieProductID = 'car';
+        if (num != undefined){
+            _num = parseInt(num);
+        }
+        
+        var totalNum = _num; //总数默认为传入参数
+        var cookieSet = { expires: 7, path: '/' }; //设置cookie路径的
+        // $.cookie(cookieProductID, null, cookieSet);//清除Cookie
+        // var jsonStr = "[{'ProductID':'" + id + "','Num':'" + _num + "'}]"; //构造json字符串,id是商品id  num是这个商品的数量
+        var jsonStr = '[{"goodsid":"'+ id + '","goodsimg":"' + goodsimg + '","goodsname":"' + goodsname + '","shop_price":"' + shop_price + '","market_price":"' + market_price + '","attr":"' + attr + '","attr_id":"' + attr_id + '","num":"' + _num + '"}]'; //构造json字符串,id是商品id  num是这个商品的数量
+        console.log(jsonStr);
+
+        if ($.cookie(cookieProductID) == null) {
+            $.cookie(cookieProductID, jsonStr, cookieSet); //如果没有这个cookie就设置他
+            flag = 1;
+        }else{
+            var jsonObj = eval("(" + $.cookie(cookieProductID) + ")"); //如果有，把json字符串转换成对象
+            var findProduct = false;//是否找到产品ID,找到则为TRUE,否则为FALSH
+            for(var obj in jsonObj) {
+                if(jsonObj[obj].goodsid == id  && jsonObj[obj].attr_id == attr_id) {
+                    if(status == 1){
+                        jsonObj[obj].num = _num;
+                    }else{
+                        jsonObj[obj].num = parseInt(jsonObj[obj].num) + _num;
+                    }
+                    findProduct = true;
+                    break;
+                }
+            }
+            if(findProduct == false){ //没找到,则添加
+                jsonObj[jsonObj.length] = new Object();
+                jsonObj[jsonObj.length - 1].goodsid = id;
+                jsonObj[jsonObj.length - 1].goodsimg = goodsimg;
+                jsonObj[jsonObj.length - 1].goodsname = goodsname;
+                jsonObj[jsonObj.length - 1].shop_price = shop_price;
+                jsonObj[jsonObj.length - 1].market_price = market_price;
+                jsonObj[jsonObj.length - 1].attr = attr;
+                jsonObj[jsonObj.length - 1].attr_id = attr_id;
+                jsonObj[jsonObj.length - 1].num = _num;
+                flag = 1;
+            }
+            $.cookie(cookieProductID, JSON.stringify(jsonObj), cookieSet); //写入coockie  JSON需要json2.js支持
+        }
+        return flag;
+    }
+    
