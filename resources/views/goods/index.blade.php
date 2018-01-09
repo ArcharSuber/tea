@@ -66,16 +66,11 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
     </div>
     <div class="mod_detailInfo_priceSales">
     <div class="margins">
-    <div class="Price clearfix text_name">
-      <label>价格</label>
-      <span class="Prices">
-        <h4 id="shop_price">¥10.9</h4> 
-        <b id="market_price">34.00</b>
-      </span>
-    </div>
-      <!-- <div class="Activity clearfix text_name"><label>重量</label><span class="weight">345克</span></div> -->
-      <div class="Size clearfix text_name"><label>规格</label><a href="javcscript:;">袋装</a><a href="javcscript:;" class="selectd" attr_id='4'>礼盒装</a><a href="javcscript:;">铁盒</a></div>
-      <div class="Size clearfix text_name"><label>重量</label><a href="javcscript:;" class="selectd" attr_id='2'>360g</a><a href="javcscript:;">540g</a></div>
+
+    <div class="Price clearfix text_name"><label>价格</label><span class="Prices"><h4>¥10.9</h4> <b>34.00</b></span></div>
+    <div class="Activity clearfix text_name"><label>重量</label><span class="weight">345克</span></div>
+      <div class="Size clearfix text_name"><label>规格</label><a href="javascript:;" attr_id="1">袋装</a><a href="javascript:;" attr_id="2">礼盒装</a><a href="javascript:;" attr_id="3">铁盒</a></div>
+
       <div class="Sales_volume">
        <div class="Sales_info"><h5>销量</h5><b>2345</b></div>
       </div>
@@ -84,6 +79,15 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
      <a href="#">好评率<b>95%</b>[评论<b>87653</b>条]</a>
     </div>
     </div>
+    <script>
+        $(".Size").find('a').click(function(){
+            $(this).attr('style','border:2px solid #C30; color:#C30;padding: 3px 5px').siblings().attr('style','');
+            $(this).attr('selected',true).siblings().attr('selected',false);
+        });
+        // $(".Size").find('a').each(function(){
+        //     alert($(this).attr('attr_id'))
+        // })
+    </script>
    <div class="buyinfo" id="detail_buyinfo">
     <dl>
         <dt>数量</dt>
