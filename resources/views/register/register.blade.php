@@ -31,38 +31,61 @@
        </div>
        <div class="bd">
         <ul>
-         <form id="form1" name="form1" method="post" action=""> 
-	   <div class="form clearfix">	
-        <div class="item"><label class="rgister-label">手&nbsp;&nbsp;机&nbsp;&nbsp;号：</label><input name="" type="text"  class="text" /></div>
-        <div class="item"><label class="rgister-label" >验&nbsp;&nbsp;证&nbsp;&nbsp;码：</label><input name="" type="text"  class="text" /><a class="phone_verification">获取验证码</a></div> 
+         <form  method="post" action="sudo" onsubmit="return cleck_all()"> 
+	         {{csrf_field()}}
+         <div class="form clearfix">	
+        <div class="item"><label class="rgister-label">手&nbsp;&nbsp;机&nbsp;&nbsp;号：</label><input name="tel" type="text" onblur="checktel()" id="tell" placeholder="请输入真实手机号码"/><span id="sptel" class="validateNew"></span></div>
+        <div class="item"><label class="rgister-label" >验&nbsp;&nbsp;证&nbsp;&nbsp;码：</label><input name="" type="text"  class="text" style="width:100px;" id="message" onblur="onblur_message()"/><span id="spmessage"></span><a class="phone_verification">获取验证码</a></div> 
+    
         <div class="item-ifo">
                     <input type="checkbox" class="checkbox left" checked="checked" id="readme" onclick="agreeonProtocol();">
                     <label for="protocol" class="left">我已阅读并同意<a href="#" class="blue" id="protocol">《福际商城用户注册协议》</a></label>
                 </div>
        </div>
        <div class="rgister-btn">
-	  <a href="javascript:;" class="btn_rgister">注&nbsp;&nbsp;&nbsp;&nbsp;册</a>
-	  </div>
-	  <div class="Note"><span class="login_link">已是会员<a href="/login">请登录</a></span></div>	  
+       <button  class="btn_rgister" id="btns">注&nbsp;&nbsp;&nbsp;&nbsp;册</button>
+	     </div>
+	     <div class="Note"><span class="login_link">已是会员<a href="/login">请登录</a></span></div>	  
        </form>
         </ul>
         <ul>
-            <form id="form1" name="form1" method="post" action=""> 
+     <form id="form1" method="post" action="registeradd"> 
+      {{csrf_field()}}
 	   <div class="form clearfix">	
-	    <div class="item"><label class="rgister-label">用&nbsp;&nbsp;户&nbsp;&nbsp;名：</label><input name="" type="text"  class="text" /><b>*</b></div>
-		<div class="item"><label class="rgister-label" >密&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码：</label><input name="" type="password"  class="text" p/><b>*</b></div> 
+	    <div class="item"><label class="rgister-label">用&nbsp;&nbsp;户&nbsp;&nbsp;名：</label><input name="username" type="text"  class="text" value="{{ old('username')}}" /><b>*{{ $errors->first('username') }}</b></div>
+		<div class="item"><label class="rgister-label" >密&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码：</label><input name="password" type="password"  class="text" value="{{ old('password')}}"/><b>*{{ $errors->first('password') }}</b></div> 
 	    <div class="Password_qd"><ul><li class="r">弱</li><li class="z">中</li><li class="q">强</li></ul></div>
-		<div class="item"><label class="rgister-label " >确认密码：</label><input name="" type="password"  class="text" /><b>*</b></div>
-	    <div class="item"><label class="rgister-label" >电子邮箱：</label><input name="" type="text"  class="text" /><b>*</b></div> 
+		<div class="item"><label class="rgister-label " >确认密码：</label><input name="password_confirmation" value="{{ old('password_confirmation')}}" type="password"  class="text" /><b>*{{ $errors->first('password_confirmation') }}</b></div>
+	    <div class="item"><label class="rgister-label" >电子邮箱：</label><input name="email" type="text" value="{{ old('email')}}"  class="text" /><b>*{{ $errors->first('email') }}</b></div> 
 	 
-	    <div class="item "><label  class="rgister-label ">验&nbsp;证&nbsp;码：</label><input name="" type="text"  class="Recommend_text" /></div>
-		<div class="item-ifo">
+	    <div class="item "><label  class="rgister-label ">验&nbsp;证&nbsp;码：</label><input name="code" type="text"  class="Recommend_text" onblur="keydown_code()" /><a onclick="javascript:re_captcha();" ><span style="padding-left:20px"><img src="{{ URL('captcha/1') }}"  alt="验证码" title="刷新图片" width="100" height="40" id="c2c98f0de5a04167a9e427d883690ff6" border="0"></a></span></div>
+		    
+
+         <!--验证码-->
+  
+ <div class="demo">
+          
+
+<script>  
+  function re_captcha() {
+    $url = "{{ URL('captcha') }}";
+        $url = $url + "/" + Math.random();
+        document.getElementById('c2c98f0de5a04167a9e427d883690ff6').src=$url;
+  }
+</script>
+
+
+    <!--验证码结束-->
+
+
+    <div class="item-ifo">
                     <input type="checkbox" class="checkbox left" checked="checked" id="readme" onclick="agreeonProtocol();">
                     <label for="protocol" class="left">我已阅读并同意<a href="#" class="blue" id="protocol">《福际商城用户注册协议》</a></label>
                 </div>
 	  </div>	
 	  <div class="rgister-btn">
-	  <a href="javascript:;" class="btn_rgister">注&nbsp;&nbsp;&nbsp;&nbsp;册</a>
+	
+     <button  class="btn_rgister">注&nbsp;&nbsp;&nbsp;&nbsp;册</button>
 	  </div>
 	  <div class="Note"><span class="login_link">已是会员<a href="/login">请登录</a></span></div>	  
 	  </form>
@@ -80,3 +103,116 @@
    </div>
 </body>
 </html>
+<script> 
+    function get_cookie(Name) {
+       var search = Name + "="//查询检索的值
+       var returnvalue = "";//返回值
+       if (document.cookie.length > 0) {
+         sd = document.cookie.indexOf(search);
+         if (sd!= -1) {
+            sd += search.length;
+            end = document.cookie.indexOf(";", sd);
+            if (end == -1)
+             end = document.cookie.length;
+             //unescape() 函数可对通过 escape() 编码的字符串进行解码。
+            returnvalue=unescape(document.cookie.substring(sd, end))
+          }
+       } 
+       return returnvalue;
+    }
+
+     $(function(){ 
+        $(".phone_verification").click(function(){
+             var tel = $("#tell").val();
+             var charactors="0123456789";
+              var num='',i;
+              for(j=1;j<=4;j++){
+                i = parseInt(10*Math.random()); 　
+                num = num + charactors.charAt(i);
+              }
+
+                document.cookie="num="+num;
+              //使用方式：
+              // var num = get_cookie("num");
+              $.ajax({
+                    //url:"message",
+                    type:"get",
+                    data:{
+                      "tel":tel,
+                      "code":num,
+                    },
+                    dataType: 'json',
+                    success: function(msg){ 
+                      alert('消息已发送');
+                    }
+                   
+               });
+            
+        });
+      
+    });
+     
+
+   //判断输入验证码是否正确
+   function onblur_message(){
+       var message = $("#message").val();
+       if(message == get_cookie("num"))
+       {   
+          $("#spmessage").html("<font color='green'> *正确</font>");return true;
+       }
+       else if(message=="")
+       {
+         $("#spmessage").html("<font color='red'> *不能为空!</font>");return false;
+       }
+       else
+       {
+         $("#spmessage").html("<font color='red'> *验证码有误</font>");return false;
+       }
+   }
+
+    //判断手机号
+    function checktel()
+    {
+       var tel=$("#tell").val();
+       var zz = /^1[345789]\d{9}$/;
+        $.ajax({
+             type:"get",
+             url:"phone",
+             dataType:"json",
+             data:{
+                'tel':tel,
+             },
+             success:function(data){
+                 if(data.error==1)
+                 {
+                      $("#sptel").html("<font color='red'> *手机号已注册！</font>")
+                 }else{
+                     if(zz.test(tel))
+                       {   
+                           $("#sptel").html("<font color='green'> *正确</font>");return true;
+                       }else if(tel == "")
+                       {
+                           $("#sptel").html("<font color='red'> *不能为空！</font>");return false;
+                       }else{
+                            $("#sptel").html("<font color='red'> *格式有误！</font>");return false;
+                       }
+                     
+                 }
+             }
+        });
+    }
+
+    function cleck_all()
+    {
+      if(checktel()&&onblur_message())
+      {
+        return true;
+      }else
+      {
+        return false;
+      }
+    }
+
+
+
+</script>
