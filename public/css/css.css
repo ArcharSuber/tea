@@ -416,10 +416,10 @@ box-shadow: 0 0 2px 2px #F8F8F8;}
 .Shopping_list{ margin:20px 0px;}
 .Shopping_list .title_name{ background:#ddd; height:40px; line-height:40px; color:#333333; font-size:14px}
 .Shopping_list .title_name li{ float:left; text-align: center}
-.Shopping_list .title_name li.name{ width:400px;}
+.Shopping_list .title_name li.name{ width:200px;}
 .Shopping_list .title_name li.checkbox{ width:40px;}
-.Shopping_list .title_name li.scj{width:100px;}
-.Shopping_list .title_name li.bdj{width:100px;}
+.Shopping_list .title_name li.scj{width:80px;}
+.Shopping_list .title_name li.bdj{width:80px;}
 .Shopping_list .title_name li.sl{width:120px;}
 .Shopping_list .title_name li.xj{width:120px;}
 .Shopping_list .title_name li.cz{width:120px;}

@@ -26,7 +26,7 @@
     <div class="clearfix" id="detail_main_img">
    <div class="layout_wrap preview">
      <div id="vertical" class="bigImg">
-    <img src="mid/01.jpg" width="" height="" alt="" id="midimg" />
+    <img src="mid/01.jpg" width="" height="" alt="" id="midimg"/>
     <div style="display:none;" id="winSelector"></div>
   </div>
      <div class="smallImg">
@@ -60,12 +60,22 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
    <!--信息样式-->
     <div class="textInfo">
     <form action="javascript:addToCart(97)" name="ECS_FORMBUY" id="ECS_FORMBUY">
-    <div class="title"><h1>Mixx 炼乳奶酪饼干 600g 马来西亚进口</h1><p>进口饼干糕点 西式糕点 休闲轻松</p></div>
+    <div class="title">
+      <input type="hidden" name="goodsid" id="goodsid" value="1">
+      <h1 id="goodsname">Mixx 炼乳奶酪饼干 600g 马来西亚进口</h1><p>进口饼干糕点 西式糕点 休闲轻松</p>
+    </div>
     <div class="mod_detailInfo_priceSales">
     <div class="margins">
-    <div class="Price clearfix text_name"><label>价格</label><span class="Prices"><h4>¥10.9</h4> <b>34.00</b></span></div>
-    <div class="Activity clearfix text_name"><label>重量</label><span class="weight">345克</span></div>
-      <div class="Size clearfix text_name"><label>规格</label><a href="#">袋装</a><a href="#">礼盒装</a><a href="#">铁盒</a></div>
+    <div class="Price clearfix text_name">
+      <label>价格</label>
+      <span class="Prices">
+        <h4 id="shop_price">¥10.9</h4> 
+        <b id="market_price">34.00</b>
+      </span>
+    </div>
+      <!-- <div class="Activity clearfix text_name"><label>重量</label><span class="weight">345克</span></div> -->
+      <div class="Size clearfix text_name"><label>规格</label><a href="javcscript:;">袋装</a><a href="javcscript:;" class="selectd" attr_id='4'>礼盒装</a><a href="javcscript:;">铁盒</a></div>
+      <div class="Size clearfix text_name"><label>重量</label><a href="javcscript:;" class="selectd" attr_id='2'>360g</a><a href="javcscript:;">540g</a></div>
       <div class="Sales_volume">
        <div class="Sales_info"><h5>销量</h5><b>2345</b></div>
       </div>
@@ -382,4 +392,30 @@ function submitComment(frm)
 </div>
 <!--底部样式-->
 @include("layout.footer")
- @include("layout.right")
+@include("layout.right")
+
+<script type="text/javascript">
+     $(".wrap_btn1").click(function(){
+         //判断用户登录状态cookie、session是否存在
+
+         //用户没有登录,购物车信息存cookie
+
+         var goodsid = $("#goodsid").val();
+         var goodsimg = $("#midimg").attr('src');
+         var goodsname = $("#goodsname").text();
+         var shop_price = $("#shop_price").text().substr(1);
+         var market_price = $("#market_price").text();
+         var num = parseInt($("#buy-num").val());
+         var attr = '';
+         var attr_id = '';
+         $(".text_name > a[class='selectd']").each(function(){
+              attr += $(this).parent().find('label').text() + ':' + $(this).text() +'  ';
+              attr_id += $(this).attr('attr_id') + ',';
+         })
+         attr_id = attr_id.substr(0,attr_id.length-1);
+         
+         if(result = AddToShoppingCar(2, goodsimg, goodsname, shop_price, market_price, attr, attr_id, num)){
+            $(".ci-count").text(parseInt($(".ci-count").text()) + 1);//获取导航栏中购物车的数量
+         }
+     })
+</script>

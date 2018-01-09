@@ -9,51 +9,11 @@
 <script src="js/jquery.SuperSlide.2.1.1.js" type="text/javascript"></script>
 <script src="js/common_js.js" type="text/javascript"></script>
 <script src="js/footer.js" type="text/javascript"></script>
+<script src="js/jquery.cookie.js"></script>
 <!--[if IE 7]>
 <link rel="stylesheet" href="css/font-awesome-ie7.min.css">
 <![endif]-->
 <title>购物车</title>
-<script type="text/javascript">
-$(document).ready(function () {
-   //全选
-   $("#CheckedAll").click(function () {
-	   if (this.checked) {                 //如果当前点击的多选框被选中
-		   $('input[type=checkbox][name=checkitems]').attr("checked", true);
-	   } else {
-		   $('input[type=checkbox][name=checkitems]').attr("checked", false);
-	   }
-   });
-   $('input[type=checkbox][name=checkitems]').click(function () {
-	   var flag = true;
-	   $('input[type=checkbox][name=checkitems]').each(function () {
-		   if (!this.checked) {
-			   flag = false;
-		   }
-	   });
-
-	   if (flag) {
-		   $('#CheckedAll').attr('checked', true);
-	   } else {
-		   $('#CheckedAll').attr('checked', false);
-	   }
-   });
-   //输出值
-   $("#send").click(function () {
-	      if($("input[type='checkbox'][name='checkitems']:checked").attr("checked")){
-	   var str = "你是否要删除选中的商品：\r\n";
-	   $('input[type=checkbox][name=checkitems]:checked').each(function () {
-		   str += $(this).val() + "\r\n";
-	   })
-	   alert(str);
-		  }
-		  else{
-			   var str = "你为选中任何商品，请选择后在操作！"; 
-			   alert(str);
-       }
-	   	    
-   });
-})
-</script>
 </head>
 <!--宽度1000的购物车样式-->
 <body>
@@ -104,6 +64,7 @@ $(document).ready(function () {
     <ul>
 	<li class="checkbox">&nbsp;</li>
 	<li class="name">商品名称</li>
+	<li class="name">属性</li>
 	<li class="scj">市场价</li>
 	<li class="bdj">本店价</li>
 	<li class="sl">购买数量</li>
@@ -114,61 +75,43 @@ $(document).ready(function () {
   <div class="shopping">
   <form  method="post" action="">
  <table class="table_list">
-   <tr class="tr">
-   <td class="checkbox"><input name="checkitems" type="checkbox" value="金龙鱼 东北大米 蟹稻共生 盘锦大米5KG" /></td>
-    <td class="name">
-	  <div class="img"><a href="#"><img src="common/images/cp-4jpg.jpg" /></a></div>
-	  <div class="p_name"><a href="#">金龙鱼 东北大米 蟹稻共生 盘锦大米5KG</a></div>
-	</td>
-	<td class="scj sp">￥39.50</td>
-	<td class="bgj sp">￥32.40</td>
-	<td class="sl">
-	    <div class="Numbers">
-		  <a href="javascript:void(0);" onclick="updatenum('del');" class="jian">-</a>
-		  <input id="number" name="number" type="text" value="1" class="number_text">
-		  <a href="javascript:void(0);" onclick="updatenum('del');" class="jia">+</a>
-		 </div>
-	</td>
-	<td class="xj">￥32.40</td>
-	<td class="cz">
-	 <p><a href="#">删除</a><P>
-	 <p><a href="#">收藏该商品</a></p>
-	</td>
-   </tr>
-     <tr class="tr on">
-	 <td class="checkbox"><input name="checkitems" type="checkbox" value="金龙鱼 东北大米 蟹稻共生 盘锦大米5KG" /></td>
-    <td class="name">
-	  <div class="img"><a href="#"><img src="common/images/cp-4jpg.jpg" /></a></div>
-	  <div class="p_name"><a href="#">金龙鱼 东北大米 蟹稻共生 盘锦大米5KG</a></div>
-	</td>
-	<td class="scj sp">￥39.50</td>
-	<td class="bgj sp">￥32.40</td>
-	<td class="sl">
-	    <div class="Numbers">
-		  <a href="javascript:void(0);" onclick="updatenum('del');" class="jian">-</a>
-		  <input id="number" name="number" type="text" value="1" class="number_text">
-		  <a href="javascript:void(0);" onclick="updatenum('del');" class="jia">+</a>
-		 </div>
-	</td>
-	<td class="xj">￥32.40</td>
-	<td class="cz">
-	 <p><a href="#">删除</a><P>
-	 <p><a href="#">收藏该商品</a></p>
-	</td>
-   </tr>
+    <tr class="tr on" id="clone" style="display: none;">
+		<td class="checkbox"><input name="checkitems" type="checkbox" value=""/></td>
+        <td class="name">
+			<div class="img"><a href="#"><img src="" class="goodsimg" /></a></div>
+			<div class="p_name">
+				<a href="#" class="goodsname">金龙鱼 东北大米 蟹稻共生 盘锦大米5KG</a>
+			</div>
+	    </td>
+	    <td class="attr">111111</td>
+		<td class="scj sp market_price">￥39.50</td>
+		<td class="bgj sp shop_price">￥32.40</td>
+		<td class="sl">
+		    <div class="Numbers">
+			  <a href="javascript:void(0);"  class="jian">-</a>
+			  <input id="number" name="number" type="text" value="" class="number_text">
+			  <a href="javascript:void(0);"  class="jia">+</a>
+			</div>
+		</td>
+		<td class="xj">￥32.40</td>
+		<td class="cz">
+			<p><a href="javascript:;" class="del">删除</a></p>
+		 	<p><a href="#">收藏该商品</a></p>
+		</td>
+    </tr>
  </table>
- <div class="sp_Operation">
+ <div class="sp_Operation" style="display: none;">
   <div class="select-all">
   <div class="cart-checkbox"><input type="checkbox"   id="CheckedAll" name="toggle-checkboxes" class="jdcheckbox" clstag="clickcart">全选</div>
-  <div class="operation"><a href="javascript:void(0);" id="send">删除选中的商品</a></div> 
+  <div class="operation"><a href="javascript:void(0);" id="delAll">删除选中的商品</a></div> 
     </div> 
      
 	 <!--结算-->
 	<div class="toolbar_right">
     <div class="p_Total">
-	  <span class="text">商品总价：</span><span class="price sumPrice">32.40元</span>
+	  <span class="text">商品总价：</span><span class="price sumPrice">0 元</span>
 	</div>
-	<div class="Discount"><span class="text">以节省：</span><span class="price">5.1</span></div>
+	<!-- <div class="Discount"><span class="text">以节省：</span><span class="price">5.1</span></div> -->
 	<div class="btn">
 	 <a class="cartsubmit" href="flow.php?step=checkout"></a>
 	 <a class="continueFind" href="./"></a>
@@ -236,3 +179,172 @@ $(document).ready(function () {
 </div>
 </body>
 </html>
+
+<script type="text/javascript">
+	$(function(){
+		//判断用户登录状态cookie、session是否存在
+		if($.cookie('car') != undefined){
+			var totalprice = parseInt(0);
+			var car = eval('('+$.cookie('car')+')');//取出cookie中存取购物车的信息，添加到页面中
+			
+			$.each(car,function(k,v){
+				var obj = $("#clone").clone();
+				$("input[name='checkitems']",obj).val(v.goodsid);
+				$(".goodsimg",obj).attr('src',v.goodsimg);
+				$(".goodsname",obj).text(v.goodsname);
+				$(".attr",obj).text(v.attr);
+				$(".market_price",obj).text("¥" + v.market_price);
+				$(".shop_price",obj).text("¥" + v.shop_price);
+				$(".number_text",obj).val(v.num);
+				totalprice += price = Number(v.shop_price) * Number(v.num);
+				$(".xj",obj).text("¥" + (Number(v.shop_price) * Number(v.num)).toFixed(2));
+				obj.attr({style:'',id:''});
+				$(".table_list").append(obj);
+			})
+			$(".sp_Operation").attr('style','');
+			$(".sumPrice").text(totalprice.toFixed(2) + " 元");
+		}else{
+			$(".table_list").append('<div style="background-color:#EEEEEE;height:200px;width:1000px;text-align:center;"><b style="line-height:200px;">购物车中还没有商品，赶紧选购吧！</b></div>');
+		}
+
+		//减少购物车商品数量
+		$(".jian").click(function(){
+			//获取所修改商品的ID以便更新cookie中商品的数量
+			var goodsid = $(this).parent().parent().parent().eq(0).find("input[name='checkitems']").val();
+			
+			var num = $(this).next();
+			if(num.val() <=1){
+				num.val(parseInt(1));
+			}else{
+				var shop_price = $(this).parent().parent().prev().text().substr(1);
+				AddToShoppingCar(goodsid, '', '', '', '', -1);
+				num.val(parseInt(num.val())-1);
+			
+				$(this).parent().parent().next().text("¥" + (Number(shop_price) * (parseInt(num.val()))).toFixed(2));
+				updatePrice();//更新购物车的商品总价
+			}
+		})
+
+		//添加购物车商品数量
+		$(".jia").click(function(){
+			var shop_price = $(this).parent().parent().prev().text().substr(1);
+			var goodsid = $(this).parent().parent().parent().eq(0).find("input[name='checkitems']").val();
+			var num = $(this).prev();
+			AddToShoppingCar(goodsid, '', '', '', '', 1);
+			num.val(parseInt(num.val())+1);
+
+			$(this).parent().parent().next().text("¥" + (Number(shop_price) * (parseInt(num.val()))).toFixed(2));
+			updatePrice();//更新购物车的商品总价
+		})
+
+		//购物车商品删除
+		$(".del").click(function(){
+			//获取所修改商品的ID以便更新cookie中商品的数量
+			var goodsid = $(this).parent().parent().parent().eq(0).find("input[name='checkitems']").val();
+
+			var jsonObj = eval('('+$.cookie('car')+')');
+			
+			var newObj = new Array();
+
+			for(var obj in jsonObj){
+				if(jsonObj[obj].goodsid != goodsid){
+					newObj.push(jsonObj[obj]);
+				}
+			}
+
+
+			if(JSON.stringify(newObj) == '[]'){
+				$.removeCookie('car', { path: '/' });
+				$(this).parents('tr').remove();
+				$(".sp_Operation").attr('style','display:none;');
+				$(".table_list").append('<div style="background-color:#EEEEEE;height:200px;width:1000px;text-align:center;"><b style="line-height:200px;">购物车中还没有商品，赶紧选购吧！</b></div>');
+			}else{
+				$.cookie('car',JSON.stringify(newObj),{ expires: 7, path: '/' });
+				$(this).parents('tr').remove();
+				console.log($.cookie('car'));
+				updatePrice();//更新购物车的商品总价
+			}
+		})
+
+		//修改购物车商品数量
+		$(".number_text").on({click:function(){
+			goodsid = $(this).parents('tr').first().find("input[name='checkitems']").val();
+			num = $(this).val();
+		},blur:function(){
+			var number = $(this).val();
+			if(number > 100){
+				alert('商品数量不能大于100');
+				$(this).val(num);
+			}else if(number < 0){
+				alert('商品数量必须大于0');
+				$(this).val(num);
+			}else if(!/^\d{1,3}$/.test(number)){
+				alert("请输入有效数字");
+				$(this).val(num);
+			}else{
+				var shop_price = $(this).parent().parent().prev().text().substr(1);
+				AddToShoppingCar(goodsid, '', '', '', '', number,1);
+				$(this).parent().parent().next().text("¥" + (Number(shop_price) * parseInt(number)).toFixed(2));
+				updatePrice();//更新购物车的商品总价
+			}
+		}})
+
+		$("#delAll").click(function(){
+			$()
+		})
+
+		//全选
+	    $("#CheckedAll").click(function () {
+		    if (this.checked) {                 
+		       //如果当前点击的多选框被选中
+			   $('input[type=checkbox][name=checkitems]').attr("checked", true);
+			   $("#clone").first().find('input[type=checkbox][name=checkitems]').prop('checked',false);
+		    } else {
+			   $('input[type=checkbox][name=checkitems]').attr("checked", false);
+		    }
+	    });
+
+	    //如果复选框全部选中则把全选框选中
+	    $('input[type=checkbox][name=checkitems]').click(function () {
+		    var flag = true;
+		    $("#clone").first().find('input[type=checkbox][name=checkitems]').prop('checked',true);
+		    $('input[type=checkbox][name=checkitems]').each(function () {
+			    if (!this.checked) {
+				   flag = false;
+			    }
+		    });
+
+		    if (flag) {
+			   $('#CheckedAll').prop('checked', true);
+		    } else {
+			   $('#CheckedAll').prop('checked', false);
+		    }
+
+		    $("#clone").first().find('input[type=checkbox][name=checkitems]').prop('checked',false);
+	    });
+
+		//批量删除
+		$("#delAll").click(function () {
+		    if($("input[type='checkbox'][name='checkitems']:checked").attr("checked")){
+		    	if(window.confirm('你是否要删除选中的商品？')){
+                 	$('input[type=checkbox][name=checkitems]:checked').each(function(){
+                 		$(this).parents('tr').last().find('.del').trigger('click');
+                 	})
+              	}
+			}else{
+			    var str = "你未选中任何商品，请选择后在操作！"; 
+			    alert(str);
+		   }
+		});
+	})
+
+	//修改购物车页面商品总价
+	function updatePrice(){
+		var totalprice = parseInt(0);
+
+		$.each(eval($.cookie('car')),function(k,v){
+				totalprice += Number(v.shop_price) * Number(v.num);
+		})
+		$(".sumPrice").text(totalprice.toFixed(2) + " 元");
+	}
+</script>
