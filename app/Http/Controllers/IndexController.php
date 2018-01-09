@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\DB;
 
 class IndexController extends Controller
 {
+
+	//产品首页
+
     //产品首页
     public function index(Request $request, $id = 0)
     {
@@ -42,6 +45,7 @@ class IndexController extends Controller
     	$result=Goods::search($key)->paginate(8);
     	$time=time();
     	return view("index/search",compact('result','time'));
+
     }
     //视图加载数据
      public function searchData(){
@@ -58,6 +62,7 @@ class IndexController extends Controller
     }
 
     //产品列表
+
     function list($id=0) {
     	$type=request('type');
     	$price=request('price');
@@ -91,5 +96,6 @@ class IndexController extends Controller
 	    }
         return view("index/list",compact('breed','bestProduct'));
     }
+
     
 }
