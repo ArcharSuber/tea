@@ -16,7 +16,14 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\SomeEvent' => [
             'App\Listeners\EventListener',
         ],
+         //Qq:
+
+      'SocialiteProviders\Manager\SocialiteWasCalled'=>[
+           'SocialiteProviders\QQ\QqExtendSocialite@handle',
+        ],
+
     ];
+
 
     /**
      * Register any events for your application.
