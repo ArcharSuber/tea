@@ -6,13 +6,13 @@ use Illuminate\Support\Facades\Session;
 <head>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link href="css/css.css" rel="stylesheet" type="text/css" />
-<link href="css/common.css" rel="stylesheet" tyle="text/css" />
-<script src="js/jquery.min.1.8.2.js" type="text/javascript"></script>
-<script src="js/jquery.SuperSlide.2.1.1.js" type="text/javascript"></script>
-<script src="js/common_js.js" type="text/javascript"></script>
-<script src="js/footer.js" type="text/javascript"></script>
-<script src="js/jquery.cookie.js"></script>
+<link href="{{asset('')}}css/css.css" rel="stylesheet" type="text/css" />
+<link href="{{asset('')}}css/common.css" rel="stylesheet" tyle="text/css" />
+<script src="{{asset('')}}js/jquery.min.1.8.2.js" type="text/javascript"></script>
+<script src="{{asset('')}}js/jquery.SuperSlide.2.1.1.js" type="text/javascript"></script>
+<script src="{{asset('')}}js/common_js.js" type="text/javascript"></script>
+<script src="{{asset('')}}js/footer.js" type="text/javascript"></script>
+<script src="{{asset('')}}js/jquery.cookie.js"></script>
 <title>茶叶商城首页</title>
 
 </head>

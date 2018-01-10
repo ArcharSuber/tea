@@ -14,7 +14,7 @@
     <div class="products">
     <!--当前位置（面包屑）-->
      <div class="Location_link">
-     <em></em><a href="/list">产品中心</a>  &lt;   <a href="#">巴山雀舌</a>  
+     <em></em><a href="/index/list">产品中心</a>  &lt;   <a href="#">巴山雀舌</a>  
      </div>
     <!--筛选条件样式-->
       <div class="products_Select marginbottom">

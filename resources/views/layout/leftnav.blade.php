@@ -5,13 +5,13 @@
       <div class="Menu_list">	
        <div class="menu_title">茶叶品种</div>
        @foreach($breed as $value)
-       <a href="/list?cate={{$value->category_id}}">{{$value->category_name}}</a>
+       <a href="/index/list?cate={{$value->category_id}}">{{$value->category_name}}</a>
        @endforeach
    </div>	
    <div class="Menu_list">	
        <div class="menu_title">茶叶价格</div>
        @foreach($productsPrice as $price)
-       <a href="/list?price={{$price->p_id}}">{{$price->price}}</a>
+       <a href="/index/list?price={{$price->p_id}}">{{$price->price}}</a>
        @endforeach
    </div>	
 
