@@ -10,6 +10,15 @@
         {{csrf_field()}}
     <p><input name="key" type="text"  class="text"/><input name="" type="submit" value=""  class="Search_btn"/></p>
 	</form>
-	<p class="Words"><a href="#">苹果</a><a href="#">香蕉</a><a href="#">菠萝</a><a href="#">西红柿</a><a href="#">橙子</a><a href="#">苹果</a></p>
+	<p class="Words"><span style="color: #ccc">搜索热度：</span>
+      @foreach($keywords as $key=>$val)
+      <a href="javascript:void(0)">{{$key}}</a>
+      @endforeach
 </div>
 </div>
+<script>
+  $(".Words a").click(function(){
+      $(":input[name='key']").val($(this).html());
+      $(".Search_btn").trigger('click');
+  });
+</script>
