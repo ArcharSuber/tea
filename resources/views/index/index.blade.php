@@ -11,13 +11,13 @@
      <div class="Menu_list">
       <div class="menu_title">茶叶品种</div>
       @foreach($breed as $value)
-      <a href="/list?cate={{$value->category_id}}" target="_blank">{{$value->category_name}}</a>
+      <a href="/index/list?cate={{$value->category_id}}" target="_blank">{{$value->category_name}}</a>
       @endforeach
     </div>
     <div class="Menu_list">
       <div class="menu_title">茶叶价格</div>
       @foreach($productsPrice as $price)
-      <a href="/list?price={{$price->p_id}}" target="_blank">{{$price->price}}</a>
+      <a href="/index/list?price={{$price->p_id}}" target="_blank">{{$price->price}}</a>
       @endforeach
     </div>
 
@@ -149,7 +149,7 @@
  <div class="Area_title">
    <div class="name"><em class="icon_title"></em>茶系列</div>
    <div class="right">
-     <span class="more"><a href="/list?type=1" target="_blank">更多《</a></span>
+     <span class="more"><a href="/index/list?type=1" target="_blank">更多《</a></span>
    </div>
  </div>
  <div class="Area_list clearfix">
@@ -180,7 +180,7 @@
  <div class="Area_title">
    <div class="name"><em class="icon_title"></em>茶具系列</div>
    <div class="right">
-     <span class="more"><a href="/list?type=2" target="_blank">更多《</a></span>
+     <span class="more"><a href="/index/list?type=2" target="_blank">更多《</a></span>
    </div>
  </div>
  <div class="Area_list clearfix">

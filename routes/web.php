@@ -10,7 +10,8 @@ Route::get('/', '\App\Http\Controllers\IndexController@index');
 Route::get('/{id}', '\App\Http\Controllers\IndexController@index')->where('id', '\d+');
 Route::get('/search','\App\Http\Controllers\IndexController@search');
 Route::any('/searchData','\App\Http\Controllers\IndexController@searchData');
-Route::get('/list', '\App\Http\Controllers\IndexController@list');
+Route::any('/getData','\App\Http\Controllers\IndexController@getData');
+Route::get('/index/list', '\App\Http\Controllers\IndexController@list');
 
 //商品模块
 
