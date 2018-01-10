@@ -7,7 +7,7 @@ Route::get('/register','\App\Http\Controllers\RegisterController@index');
 
 //商品首页
 Route::get('/','\App\Http\Controllers\IndexController@index');
-Route::get('/list','\App\Http\Controllers\IndexController@list');
+Route::get('/index_list','\App\Http\Controllers\IndexController@list');
 
 //商品模块
 Route::get('/desc','\App\Http\Controllers\GoodsController@index');
@@ -51,3 +51,5 @@ Route::any("/phone",'\App\Http\Controllers\RegisterController@phone');
 Route::get('/qqCallback','\App\Http\Controllers\LoginController@qqlogin');
 //qq
 Route::get('/qq','\App\Http\Controllers\LoginController@qq');
+//绑定qq入库
+Route::any('/bandqq','\App\Http\Controllers\LoginController@bandqq');
