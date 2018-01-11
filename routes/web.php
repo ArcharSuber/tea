@@ -64,10 +64,8 @@ Route::any("/phone",'\App\Http\Controllers\RegisterController@phone');
 Route::get('/qqCallback','\App\Http\Controllers\LoginController@qqlogin');
 //qq
 Route::get('/qq','\App\Http\Controllers\LoginController@qq');
+//绑定qq入库
+Route::any('/bandqq','\App\Http\Controllers\LoginController@bandqq');
 
 //同步购物车
 Route::get('/dataSync','\App\Http\Controllers\CarController@dataSync')->name('car.dataSync');
-
-
-
-

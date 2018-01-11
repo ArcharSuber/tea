@@ -7,7 +7,7 @@
 <script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
 <script src="js/jquery.SuperSlide.2.1.1.js" type="text/javascript"></script>
 <script src="js/common_js.js" type="text/javascript"></script>
-<title>用户登录</title>
+<title>绑定用户</title>
 </head>
 
 <body>
@@ -24,14 +24,14 @@
    <div class="login_advertising"><img src="images/bg_03.png" /></div>
   <div class="login_frame">
    <div class="login-form">
-     <div class="login-name"><h1 class="name">用户登录</h1><span class="login_link"><a href="/register"><b></b>用户注册</a></span></div>
+     <div class="login-name"><h1 class="name">绑定用户</h1><span class="login_link"><a href="/register"><b></b>用户注册</a></span></div>
 	  <!--提示信息-->
 	    <div class="Prompt">账号密码不能为空！ </div>
 	    <div class="form clearfix">
-	     <div class="item item-fore1"><label for="loginname" class="login-label name-label"></label><input name="username" type="text" id="usertext" class="text" placeholder="请输入用户"/>
+	     <div class="item item-fore1"><label for="loginname" class="login-label name-label"></label><input name="username" type="text" id = "usertext" class="text" placeholder="请输入用户"/>
 		 </div>
 		 <div class="item item-fore2"><label for="nloginpwd" class="login-label pwd-label" ></label><input name="password" type="password" id = "passtext"  class="text" placeholder="用户密码"/>
-	     </div> <a href="qq"><img src="images/qqlogin.png" alt="" /></a>
+	    
 	     <div class="Forgetpass"><a href="#">忘记密码？</a></div>
 	    </div>	
 	    <div class="login-btn">
@@ -56,12 +56,12 @@
 <script>
      	 $(function(){
      	 	  $(".btn_login").click(function(){
-            alert(1)
      	 	  	   var user = $("#usertext").val();
      	 	  	   var pass = $("#passtext").val();
+                 
                     $.ajax({
                          type:"get",
-                         url:"{{url('list')}}",
+                         url:"{{url('bandqq')}}",
                          dataType:"json",
                          data:{
                          	'user':user,

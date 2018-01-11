@@ -49,7 +49,7 @@ class LoginController extends Controller
         }
         return response()->json($data);
     }
-    
+    //用户退出
     public function loginout(Request $request)
     {
         $request->session()->flush();
@@ -59,21 +59,61 @@ class LoginController extends Controller
            return redirect("login");
         }
     }
+    //qq登录页面
     public function qq()
     {
          return Socialite::with('qq')->redirect();
     }
+    //qq返回地址
     public function qqlogin()
     {  
         // http://www.shops.com/qqCallback
-        $code=request('code');
+        $code = request('code');
         $access_token=file_get_contents("https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id=101445016&client_secret=ebd13d7be7a43deea19ddcbcefe959d2&code=$code&redirect_uri=www.shops.com/qqCallback");
-
         $len = strpos($access_token,"&expires_in");
-
         $access_token=substr($access_token,13,$len-13);
+        $str = file_get_contents("https://graph.qq.com/oauth2.0/me?access_token=$access_token");
+       var_dump($str);die;
+        $lpos = strpos($str, "(");
+        $rpos = strrpos($str, ")");
+        $str = substr($str, $lpos+1, $rpos-$lpos-1);
+        $user = json_decode($str);
+        $openid = $user->openid;
+        $res = DB::table('user')->where('qqlogin','=',$openid)->first();
 
-       echo $str = file_get_contents("https://graph.qq.com/oauth2.0/me?access_token=$access_token");
+        if(!empty($res->user_id))
+         { 
+                Session::put('user_id',$res->user_id);
+                Session::put('user',$res->username);
+           echo "<script>alert('登录成功!');location.href='/'</script>";
+         }else{
+            $time = time();
+            $arr = DB::table('user')->insert(['user_id'=>null,'registerTime'=>$time,]);
+            Session::put('openid',$openid);
+            return view('login/banding');
+           
+         }
     }
+
+    //qq绑定用户入库
+    public function bandqq(Request $request)
+    {
+        $user = $request->input('user');
+        $pass = $request->input('pass');
+        $openid = Session::get('openid');
+        $time = time();
+        $res = DB::table('user')->insertGetId(['user_id'=>null,'username'=>$user,'password'=>$pass,'registerTime'=>$time,'qqlogin'=>$openid]);
+        if($res)
+        {       
+            Session::put('user_id',$res);
+            Session::put('user',$user);
+            $data['error'] = 1;
+            $data['msg'] = '登录成功!';
+        }else{
+            $data['error'] = 0;
+            $data['msg'] = '登录失败!';
+        }
+        return response()->json($data);
+    } 
     
 }
