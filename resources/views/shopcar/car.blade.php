@@ -83,7 +83,7 @@
 				<a href="#" class="goodsname">金龙鱼 东北大米 蟹稻共生 盘锦大米5KG</a>
 			</div>
 	    </td>
-	    <td class="attr">111111</td>
+	    <td class="attr" attr_id=""></td>
 		<td class="scj sp market_price">￥39.50</td>
 		<td class="bgj sp shop_price">￥32.40</td>
 		<td class="sl">
@@ -183,43 +183,92 @@
 <script type="text/javascript">
 	$(function(){
 		//判断用户登录状态cookie、session是否存在
-		if($.cookie('car') != undefined){
-			var totalprice = parseInt(0);
-			var car = eval('('+$.cookie('car')+')');//取出cookie中存取购物车的信息，添加到页面中
-			
-			$.each(car,function(k,v){
-				var obj = $("#clone").clone();
-				$("input[name='checkitems']",obj).val(v.goodsid);
-				$(".goodsimg",obj).attr('src',v.goodsimg);
-				$(".goodsname",obj).text(v.goodsname);
-				$(".attr",obj).text(v.attr);
-				$(".market_price",obj).text("¥" + v.market_price);
-				$(".shop_price",obj).text("¥" + v.shop_price);
-				$(".number_text",obj).val(v.num);
-				totalprice += price = Number(v.shop_price) * Number(v.num);
-				$(".xj",obj).text("¥" + (Number(v.shop_price) * Number(v.num)).toFixed(2));
-				obj.attr({style:'',id:''});
-				$(".table_list").append(obj);
-			})
-			$(".sp_Operation").attr('style','');
-			$(".sumPrice").text(totalprice.toFixed(2) + " 元");
+		if($.cookie('user')){
+             $.ajax({
+                type: 'get',
+                url: "{{ url('shopcar/show') }}",
+                dataType: 'json',
+                async: false,
+                success:function(msg){
+                	if(msg.length != 0){
+	                	var totalprice = parseInt(0);
+	                  	$.each(msg,function(k,v){
+							var obj = $("#clone").clone();
+							$("input[name='checkitems']",obj).val(v.goods_id);
+							$(".goodsimg",obj).attr('src',v.goods_img);
+							$(".goodsname",obj).text(v.goods_name);
+							$(".attr",obj).text(v.attr);
+							$(".attr",obj).attr('attr_id',v.goods_attr);
+							$(".market_price",obj).text("¥" + v.market_price);
+							$(".shop_price",obj).text("¥" + v.shop_price);
+							$(".number_text",obj).val(v.number);
+							totalprice += price = Number(v.shop_price) * Number(v.number);
+							$(".xj",obj).text("¥" + (Number(v.shop_price) * Number(v.number)).toFixed(2));
+							obj.attr({style:'',id:''}).addClass('main');
+							$(".table_list").append(obj);
+					    })
+					    $(".sp_Operation").attr('style','');
+						$(".sumPrice").text(totalprice.toFixed(2) + " 元");
+					}else{
+						nullShow();
+					}
+                }
+             })
 		}else{
-			$(".table_list").append('<div style="background-color:#EEEEEE;height:200px;width:1000px;text-align:center;"><b style="line-height:200px;">购物车中还没有商品，赶紧选购吧！</b></div>');
+			if($.cookie('car') != undefined){
+				var totalprice = parseInt(0);
+				var car = eval('('+$.cookie('car')+')');//取出cookie中存取购物车的信息，添加到页面中
+				
+				$.each(car,function(k,v){
+					var obj = $("#clone").clone();
+					$("input[name='checkitems']",obj).val(v.goodsid);
+					$(".goodsimg",obj).attr('src',v.goodsimg);
+					$(".goodsname",obj).text(v.goodsname);
+					$(".attr",obj).text(v.attr);
+					$(".attr",obj).attr('attr_id',v.attr_id);
+					$(".market_price",obj).text("¥" + v.market_price);
+					$(".shop_price",obj).text("¥" + v.shop_price);
+					$(".number_text",obj).val(v.num);
+					totalprice += price = Number(v.shop_price) * Number(v.num);
+					$(".xj",obj).text("¥" + (Number(v.shop_price) * Number(v.num)).toFixed(2));
+					obj.attr({style:'',id:'main'}).addClass('main');
+					$(".table_list").append(obj);
+				})
+				$(".sp_Operation").attr('style','');
+				$(".sumPrice").text(totalprice.toFixed(2) + " 元");
+		    }else{
+				nullShow();
+			}
 		}
 
 		//减少购物车商品数量
-		$(".jian").click(function(){
+		$(".jian").live('click',function(){
 			//获取所修改商品的ID以便更新cookie中商品的数量
 			var goodsid = $(this).parent().parent().parent().eq(0).find("input[name='checkitems']").val();
+			var attr_id = $(this).parents('tr').find("td").eq(2).attr('attr_id');
+			var shop_price = $(this).parent().parent().prev().text().substr(1);
 			
 			var num = $(this).next();
-			if(num.val() <=1){
+			if(num.val() <= 1){
 				num.val(parseInt(1));
 			}else{
-				var shop_price = $(this).parent().parent().prev().text().substr(1);
-				AddToShoppingCar(goodsid, '', '', '', '', -1);
+				if($.cookie('user')){
+					$.ajax({
+						type: 'post',
+						url: "{{ url('shopcar/edit') }}",
+						data: {"goodsid":goodsid,"attr_id":attr_id,"number":-1},
+						headers: {
+						   'X-XSRF-TOKEN': $.cookie('XSRF-TOKEN')
+						},
+						dataType: 'json',
+						success:function(msg){
+							
+						}
+					})
+				}else{
+					AddToShoppingCar(goodsid, '', '', '', '', '', attr_id, -1);
+				}
 				num.val(parseInt(num.val())-1);
-			
 				$(this).parent().parent().next().text("¥" + (Number(shop_price) * (parseInt(num.val()))).toFixed(2));
 				updatePrice();//更新购物车的商品总价
 			}
@@ -229,49 +278,93 @@
 		$(".jia").click(function(){
 			var shop_price = $(this).parent().parent().prev().text().substr(1);
 			var goodsid = $(this).parent().parent().parent().eq(0).find("input[name='checkitems']").val();
+			var attr_id = $(this).parents('tr').find("td").eq(2).attr('attr_id');
 			var num = $(this).prev();
-			AddToShoppingCar(goodsid, '', '', '', '', 1);
-			num.val(parseInt(num.val())+1);
 
-			$(this).parent().parent().next().text("¥" + (Number(shop_price) * (parseInt(num.val()))).toFixed(2));
-			updatePrice();//更新购物车的商品总价
+			if(num.val() >= 200){
+				num.val(parseInt(200));
+			}else{
+				if($.cookie('user')){
+					$.ajax({
+						type: 'post',
+						url: "{{ url('shopcar/edit') }}",
+						data: {"goodsid":goodsid,"attr_id":attr_id,"number":1},
+						async: false,
+						headers: {
+						   'X-XSRF-TOKEN': $.cookie('XSRF-TOKEN')
+						},
+						dataType: 'json',
+						success:function(msg){
+							
+						}
+					})
+				}else{
+					AddToShoppingCar(goodsid, '', '', '', '', '', attr_id, 1);
+				}
+				num.val(parseInt(num.val())+1);
+				$(this).parent().parent().next().text("¥" + (Number(shop_price) * (parseInt(num.val()))).toFixed(2));
+				updatePrice();//更新购物车的商品总价
+			}
 		})
 
 		//购物车商品删除
 		$(".del").click(function(){
 			//获取所修改商品的ID以便更新cookie中商品的数量
 			var goodsid = $(this).parent().parent().parent().eq(0).find("input[name='checkitems']").val();
+			var attr_id = $(this).parents('tr').find("td").eq(2).attr('attr_id');
+			var obj = $(this);
 
-			var jsonObj = eval('('+$.cookie('car')+')');
-			
-			var newObj = new Array();
-
-			for(var obj in jsonObj){
-				if(jsonObj[obj].goodsid != goodsid){
-					newObj.push(jsonObj[obj]);
-				}
-			}
-
-
-			if(JSON.stringify(newObj) == '[]'){
-				$.removeCookie('car', { path: '/' });
-				$(this).parents('tr').remove();
-				$(".sp_Operation").attr('style','display:none;');
-				$(".table_list").append('<div style="background-color:#EEEEEE;height:200px;width:1000px;text-align:center;"><b style="line-height:200px;">购物车中还没有商品，赶紧选购吧！</b></div>');
+			if($.cookie('user')){
+				$.ajax({
+					type: 'post',
+					url: "{{ url('shopcar/delete') }}",
+					data: {"goodsid":goodsid,"attr_id":attr_id},
+					headers: {
+					   'X-XSRF-TOKEN': $.cookie('XSRF-TOKEN')
+					},
+					dataType: 'json',
+					success:function(msg){
+						if(msg.count){
+							obj.parents('tr').remove();
+							updatePrice();
+						}else{
+							nullShow();
+						}
+					}
+				})
 			}else{
-				$.cookie('car',JSON.stringify(newObj),{ expires: 7, path: '/' });
-				$(this).parents('tr').remove();
-				console.log($.cookie('car'));
-				updatePrice();//更新购物车的商品总价
+				var jsonObj = eval('('+$.cookie('car')+')');
+				
+				var newObj = new Array();
+
+				for(var obj in jsonObj){
+					if(jsonObj[obj].goodsid != goodsid || jsonObj[obj].attr_id != attr_id){
+						newObj.push(jsonObj[obj]);
+					}
+				}
+
+				if(JSON.stringify(newObj) == '[]'){
+					$.removeCookie('car', { path: '/' });
+					$(this).parents('tr').remove();
+					$(".sp_Operation").attr('style','display:none;');
+					nullShow();
+				}else{
+					$.cookie('car',JSON.stringify(newObj),{ expires: 7, path: '/' });
+					$(this).parents('tr').remove();
+					updatePrice();//更新购物车的商品总价
+				}
 			}
 		})
 
 		//修改购物车商品数量
 		$(".number_text").on({click:function(){
 			goodsid = $(this).parents('tr').first().find("input[name='checkitems']").val();
+			attr_id = $(this).parents('tr').find("td").eq(2).attr('attr_id');
 			num = $(this).val();
 		},blur:function(){
 			var number = $(this).val();
+			var shop_price = $(this).parent().parent().prev().text().substr(1);
+
 			if(number > 100){
 				alert('商品数量不能大于100');
 				$(this).val(num);
@@ -282,16 +375,26 @@
 				alert("请输入有效数字");
 				$(this).val(num);
 			}else{
-				var shop_price = $(this).parent().parent().prev().text().substr(1);
-				AddToShoppingCar(goodsid, '', '', '', '', number,1);
+				if($.cookie('user')){
+					$.ajax({
+						type: 'post',
+						url: "{{ url('shopcar/edit') }}",
+						data: {"goodsid":goodsid,"attr_id":attr_id,"number":number},
+						headers: {
+						   'X-XSRF-TOKEN': $.cookie('XSRF-TOKEN')
+						},
+						dataType: 'json',
+						success:function(msg){
+							
+						}
+					})
+				}else{
+					AddToShoppingCar(goodsid, '', '', '', '', '', attr_id, number,1);
+				}
 				$(this).parent().parent().next().text("¥" + (Number(shop_price) * parseInt(number)).toFixed(2));
 				updatePrice();//更新购物车的商品总价
 			}
 		}})
-
-		$("#delAll").click(function(){
-			$()
-		})
 
 		//全选
 	    $("#CheckedAll").click(function () {
@@ -332,8 +435,7 @@
                  	})
               	}
 			}else{
-			    var str = "你未选中任何商品，请选择后在操作！"; 
-			    alert(str);
+			    alert('你未选中任何商品，请选择后在操作！');
 		   }
 		});
 	})
@@ -342,9 +444,20 @@
 	function updatePrice(){
 		var totalprice = parseInt(0);
 
-		$.each(eval($.cookie('car')),function(k,v){
+		if($.cookie('user')){
+			$(".main").each(function(){
+				totalprice += Number($(this).find(".xj").text().substr(1));
+			})
+		}else{
+			$.each(eval($.cookie('car')),function(k,v){
 				totalprice += Number(v.shop_price) * Number(v.num);
-		})
+			})
+		}
 		$(".sumPrice").text(totalprice.toFixed(2) + " 元");
+	}
+
+	//购物车为空展示
+	function nullShow(){
+		$(".table_list").append('<div style="background-color:#EEEEEE;height:200px;width:1000px;text-align:center;"><b style="line-height:200px;">购物车中还没有商品，赶紧选购吧！</b></div>');
 	}
 </script>

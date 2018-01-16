@@ -395,27 +395,43 @@ function submitComment(frm)
 @include("layout.right")
 
 <script type="text/javascript">
+     //$.cookie('user','1',{ expires: 7, path: '/' });
      $(".wrap_btn1").click(function(){
+           var goodsid = $("#goodsid").val();
+           var num = parseInt($("#buy-num").val());
+           var attr = '';
+           var attr_id = '';
+           $(".text_name > a[class='selectd']").each(function(){
+                attr += $(this).parent().find('label').text() + ':' + $(this).text() +'  ';
+                attr_id += $(this).attr('attr_id') + ',';
+           })
+           attr_id = attr_id.substr(0,attr_id.length-1);
+
          //判断用户登录状态cookie、session是否存在
-
-         //用户没有登录,购物车信息存cookie
-
-         var goodsid = $("#goodsid").val();
-         var goodsimg = $("#midimg").attr('src');
-         var goodsname = $("#goodsname").text();
-         var shop_price = $("#shop_price").text().substr(1);
-         var market_price = $("#market_price").text();
-         var num = parseInt($("#buy-num").val());
-         var attr = '';
-         var attr_id = '';
-         $(".text_name > a[class='selectd']").each(function(){
-              attr += $(this).parent().find('label').text() + ':' + $(this).text() +'  ';
-              attr_id += $(this).attr('attr_id') + ',';
-         })
-         attr_id = attr_id.substr(0,attr_id.length-1);
-         
-         if(result = AddToShoppingCar(2, goodsimg, goodsname, shop_price, market_price, attr, attr_id, num)){
-            $(".ci-count").text(parseInt($(".ci-count").text()) + 1);//获取导航栏中购物车的数量
+         if($.cookie('user') == null){
+             //用户没有登录,购物车信息存cookie
+             var goodsimg = $("#midimg").attr('src');
+             var goodsname = $("#goodsname").text();
+             var shop_price = $("#shop_price").text().substr(1);
+             var market_price = $("#market_price").text();
+             
+             if(result = AddToShoppingCar(goodsid, goodsimg, goodsname, shop_price, market_price, attr, attr_id, num)){
+                $(".ci-count").text(parseInt($(".ci-count").text()) + 1);//获取导航栏中购物车的数量
+             }
+         }else{
+             //用户登录后购物车信息存数据库
+             $.ajax({
+                type: 'post',
+                url: "{{ url('shopcar/add') }}",
+                data: {goodsid:goodsid,num:num,attr:attr,attr_id:attr_id},
+                headers: {
+                   'X-XSRF-TOKEN': $.cookie('XSRF-TOKEN')
+                },
+                dataType: 'json',
+                success:function(msg){
+                     $(".ci-count").text(msg.count);
+                }
+             })
          }
      })
 </script>

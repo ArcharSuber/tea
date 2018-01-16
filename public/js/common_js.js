@@ -11,8 +11,8 @@ $(document).ready(function(){
 		$(".mod_qr").hide();
 	})
 });
-//产品边框样式
- $("li.gl-item").hover(function(){
+    //产品边框样式
+    $("li.gl-item").hover(function(){
 			$(this).addClass("hover");
 			//$(this).children(".dorpdown-layer").attr('class','');
 		},function(){
@@ -21,34 +21,73 @@ $(document).ready(function(){
 		}
 	); 
 
- //更新购物车的数量
- console.log($.cookie('car'));
- 
- if($.cookie('car') != undefined){
-    $(".ci-count").text(eval($.cookie('car')).length);
- }
+    //更新购物车的数量
+    if($.cookie('user')){
+        //登录状态查询
+        $.ajax({
+            type: 'get',
+            url: "http://www.tea.com/shopcar/count",
+            dataType: 'json',
+            success:function(msg){
+                if(msg.count){
+                    $(".ci-count").text(msg.count);
+                }
+            }
+        })
+    }else{
+        //未登录状态读取Cookie长度
+        if($.cookie('car') != undefined){
+            $(".ci-count").text(eval($.cookie('car')).length);
+        }
+    }
  
     //购物车
     $("div.hd_Shopping_list").hover(function(){
-            if($.cookie('car') == undefined){
-                $("#Shopping_list").append('<div class="dorpdown-layer"><div class="spacer"></div><div class="prompt"></div><div class="nogoods"><b></b>购物车中还没有商品，赶紧选购吧！</div></div>');
-
-            }else{
-                var html = '<div class="dorpdown-layer"><div class="spacer"></div>';
-                var goodsNum = parseInt(0);
-                var priceNum = parseInt(0);
-                $.each(eval($.cookie('car')),function(k,v){
-                    goodsNum = goodsNum + parseInt(v.num);
-                    priceNum = priceNum + parseInt(v.num) * parseFloat(v.shop_price);
-                    html += '<ul class="p_s_list"><li><div class="img"><img src="'+v.goodsimg+'"></div><div class="content"><p><a href="#">'+v.goodsname.substr(0,16)+'</a></p><p>'+v.attr+'</p></div><div class="Operations"><p class="Price">¥'+v.shop_price+'</p><p><a href="#">删除</a></p></div></li></ul>';
+            if($.cookie('user')){
+                $.ajax({
+                    type: 'get',
+                    url: "http://www.tea.com/shopcar/show",
+                    dataType: 'json',
+                    async: false,
+                    success:function(msg){
+                        if(msg.length != 0){
+                            var html = '<div class="dorpdown-layer"><div class="spacer"></div>';
+                            var goodsNum = parseInt(0);
+                            var priceNum = parseInt(0);
+                            $.each(msg,function(k,v){
+                                goodsNum = goodsNum + parseInt(v.number);
+                                priceNum = priceNum + parseInt(v.number) * parseFloat(v.shop_price);
+                                html += '<ul class="p_s_list"><li><div class="img"><img src="'+v.goods_img+'"></div><div class="content"><p><a href="#">'+v.goods_name.substr(0,16)+'</a></p><p>'+v.attr+'</p></div><div class="Operations"><p class="Price">¥'+v.shop_price+'</p><p><a href="#">删除</a></p></div></li></ul>';
+                            })
+                            html += '<div class="Shopping_style"><div class="p-total">共<b>'+goodsNum+'</b>件商品　共计<strong>￥ '+priceNum.toFixed(2)+'</strong></div><a href="shopping_cart.html" title="去购物车结算" id="btn-payforgoods" class="Shopping">去购物车结算</a></div></div>'; 
+                            $('#Shopping_list').append(html);
+                        }else{
+                            $("#Shopping_list").append('<div class="dorpdown-layer"><div class="spacer"></div><div class="prompt"></div><div class="nogoods"><b></b>购物车中还没有商品，赶紧选购吧！</div></div>');
+                        }
+                    }
                 })
-                html += '<div class="Shopping_style"><div class="p-total">共<b>'+goodsNum+'</b>件商品　共计<strong>￥ '+priceNum.toFixed(2)+'</strong></div><a href="shopping_cart.html" title="去购物车结算" id="btn-payforgoods" class="Shopping">去购物车结算</a></div></div>'; 
-                $('#Shopping_list').append(html);
+            }else{
+                if($.cookie('car') == undefined){
+                    $("#Shopping_list").append('<div class="dorpdown-layer"><div class="spacer"></div><div class="prompt"></div><div class="nogoods"><b></b>购物车中还没有商品，赶紧选购吧！</div></div>');
+
+                }else{
+                    var html = '<div class="dorpdown-layer"><div class="spacer"></div>';
+                    var goodsNum = parseInt(0);
+                    var priceNum = parseInt(0);
+                    $.each(eval($.cookie('car')),function(k,v){
+                        goodsNum = goodsNum + parseInt(v.num);
+                        priceNum = priceNum + parseInt(v.num) * parseFloat(v.shop_price);
+                        html += '<ul class="p_s_list"><li><div class="img"><img src="'+v.goodsimg+'"></div><div class="content"><p><a href="#">'+v.goodsname.substr(0,16)+'</a></p><p>'+v.attr+'</p></div><div class="Operations"><p class="Price">¥'+v.shop_price+'</p><p><a href="#">删除</a></p></div></li></ul>';
+                    })
+                    html += '<div class="Shopping_style"><div class="p-total">共<b>'+goodsNum+'</b>件商品　共计<strong>￥ '+priceNum.toFixed(2)+'</strong></div><a href="shopping_cart.html" title="去购物车结算" id="btn-payforgoods" class="Shopping">去购物车结算</a></div></div>'; 
+                    $('#Shopping_list').append(html);
+                }
             }
+
 			$(this).addClass("hover");
 			//$(this).children(".dorpdown-layer").attr('class','');
 		},function(){
-			$(this).removeClass("hover");  
+			$(this).removeClass("hover");
 			//$(this).children(".dorpdown-layer").attr('class','');
 		}
 	);
@@ -338,4 +377,3 @@ $(window).scroll(function() {
         }
         return flag;
     }
-    

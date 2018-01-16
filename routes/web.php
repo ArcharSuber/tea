@@ -33,6 +33,12 @@ Route::get('/userorder','\App\Http\Controllers\UserController@order');
 
 //购物车模块
 Route::get('/shopcar','\App\Http\Controllers\CarController@index');
+Route::post('/shopcar/add','\App\Http\Controllers\CarController@add');
+Route::get('/shopcar/show','\App\Http\Controllers\CarController@show');
+Route::post('/shopcar/edit','\App\Http\Controllers\CarController@edit');
+Route::post('/shopcar/delete','\App\Http\Controllers\CarController@delete');
+Route::get('/shopcar/count','\App\Http\Controllers\CarController@count');
+
 //同步购物车
 Route::get('/dataSync','\App\Http\Controllers\CarController@dataSync')->name('car.dataSync');
 

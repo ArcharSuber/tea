@@ -12,7 +12,7 @@ class EncryptCookies extends BaseEncrypter
      * @var array
      */
     protected $except = [
-        'cookie_for_js',
+        'user',
         'car',
     ];
 }
